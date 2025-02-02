@@ -34,6 +34,7 @@
        }
 
        h1, h2 {
+           font-size: 2em;
            margin-bottom: 20px;
            text-align: center;
            text-transform: uppercase;
@@ -105,20 +106,20 @@
        }
 
        #thumbnailContainer {
-           display: flex;
-           justify-content: center;
-           gap: 10px;
-           margin-top: 20px;
-           width: 100%;
-           max-width: 600px;
-           overflow-x: auto;
-           padding-bottom: 10px;
-       }
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    justify-content: center;
+    margin: 10px auto; /* auto marginit keskittävät */
+    width: 100%;
+    max-width: 600px;
+    place-items: center; /* keskittää itemit soluissa */
+}
 
        .thumbnail {
-           width: 80px;
-           height: 80px;
-           flex-shrink: 0;
+           width: 100px;
+           height: 100px;
+           aspect-ratio: 1 / 1;
            object-fit: cover;
            cursor: pointer;
            transition: transform 0.2s;
@@ -130,41 +131,47 @@
        }
 
        @media (max-width: 768px) {
-           .container {
-               padding: 10px;
-           }
+    .container {
+        padding: 10px;
+    }
 
-           .button {
-               padding: 8px 16px;
-               font-size: 14px;
-           }
+    .button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
 
-           h1 {
-               font-size: 1.5em;
-           }
+    h1 {
+        font-size: 1.5em;
+    }
 
-           #nextArrow {
-               width: 100px;
-               height: 100px;
-           }
+    #nextArrow {
+        width: 100px;
+        height: 100px;
+    }
 
-           .thumbnail {
-               width: 60px;
-               height: 60px;
-           }
-       }
+    #thumbnailContainer {
+        max-width: 270px;
+    }
 
-       @media (max-width: 480px) {
-           #nextArrow {
-               width: 75px;
-               height: 75px;
-           }
+    .thumbnail {
+        width: 75px;
+        height: 75px;
+    }
+}
 
-           .thumbnail {
-               width: 50px;
-               height: 50px;
-           }
-       }
+@media (max-width: 480px) {
+    #thumbnailContainer {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+        max-width: 250px;
+    }
+    
+    .thumbnail {
+        width: 75px;
+        height: 75px;
+    }
+}
    </style>
 </head>
 <body>
@@ -252,34 +259,34 @@
         setTimeout(() => {
             audioPlaying = false;
             nextArrow.classList.remove('disabled-arrow');
-        }, 1300);
+        }, 1500);
     } else {
         showThumbnails();
     }
 }
 
-       function playAudio(audioSrc, callback) {
-           const audio = new Audio(audioSrc);
-           audio.onended = () => {
-               if (callback) callback();
-               audioPlaying = false;
-           };
-           audio.onerror = (e) => {
-               console.error('Virhe äänen toistossa:', e);
-               if (callback) callback();
-               audioPlaying = false;
-           };
-           audioPlaying = true;
-           audio.play().catch(e => {
-               console.error('Virhe äänen toistossa:', e);
-               if (callback) callback();
-               audioPlaying = false;
-           });
-       }
+function playAudio(audioSrc, callback) {
+    const audio = new Audio(audioSrc);
+    audio.onended = () => {
+        if (callback) callback();
+        audioPlaying = false;
+    };
+    audio.onerror = (e) => {
+        console.error('Virhe äänen toistossa:', e);
+        if (callback) callback();
+        audioPlaying = false;
+    };
+    audioPlaying = true;
+    audio.play().catch(e => {
+        console.error('Virhe äänen toistossa:', e);
+        if (callback) callback();
+        audioPlaying = false;
+    });
+}
 
        function showThumbnails() {
            nextArrow.style.display = 'none';
-           thumbnailContainer.style.display = 'flex';
+           thumbnailContainer.style.display = 'grid';
            thumbnailContainer.innerHTML = '';
            const images = currentGameMode === 'tavutettu' ? imagesTavutettu : imagesSana;
            const audios = currentGameMode === 'tavutettu' ? audiosTavutettu : audiosSana;
